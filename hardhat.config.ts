@@ -1,7 +1,16 @@
+import {config as dotenvConfig} from "dotenv";
+import {resolve} from "path";
+
 import {HardhatUserConfig} from "hardhat/config";
 import "@nomicfoundation/hardhat-toolbox";
 
 import "./tasks/addLiquidity";
+import {logProvider} from "./LogProvider";
+
+const dotenvConfigPath: string = process.env.DOTENV_CONFIG_PATH || "./.env";
+dotenvConfig({path: resolve(__dirname, dotenvConfigPath)});
+
+console.log("mnemonic", process.env.MNEMONIC || "");
 
 const config: HardhatUserConfig = {
   defaultNetwork: 'localhost',
@@ -21,7 +30,7 @@ const config: HardhatUserConfig = {
       hardfork: 'istanbul',
     },
     goerli: {
-      url: "https://goerli.infura.io/v3/",
+      url: "https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161",
       chainId: 5,
       gas: 30000000,
       accounts: {

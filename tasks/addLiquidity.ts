@@ -1,30 +1,31 @@
 import {task} from "hardhat/config";
-import {WRub__factory} from "../typechain-types";
+import ERC20 from "@openzeppelin/contracts/build/contracts/ERC20.json";
 
 task("addLiquidity", "Add liquidity for pair")
   .addParam("account", "account")
   .addParam("contract", "AddLiquidity contract")
   .addParam("tokenA", "tokenA address")
-  .addParam("tokenAamount", "Amount of tokenA to approve", "3000000000000000000")
+  .addParam("tokenAAmount", "Amount of tokenA to approve", "3000000000000000000")
   .addParam("tokenB", "tokenB address")
-  .addParam("tokenBamount", "Amount of tokenB to approve", "3000000000000000000")
-  .setAction(async ({account, contract, tokenA, tokenB, tokenAamount, tokenBamount}, {ethers}) => {
+  .addParam("tokenBAmount", "Amount of tokenB to approve", "3000000000000000000")
+  .setAction(async ({account, contract, tokenA, tokenB, tokenAAmount, tokenBAmount}, {ethers}) => {
     const signer = await ethers.getSigner(account);
 
-    const _tokenA = await ethers.getContractAt(WRub__factory.abi as any, tokenA, signer);
-    const _tokenB = await ethers.getContractAt(WRub__factory.abi as any, tokenB, signer);
+    const _tokenA = await ethers.getContractAt(ERC20.abi as any, tokenA, signer);
+    const _tokenB = await ethers.getContractAt(ERC20.abi as any, tokenB, signer);
     
-    const AddLiaquidity = await ethers.getContractAt("AddLiquidity", contract);
+    const AddLiaquidity = await ethers.getContractAt("AddLiquidity", contract, signer);
+    console.dir(_tokenA, {depth: 3});
 
     let tx;
-    tx = await tokenA.connect(signer).approve(AddLiaquidity, tokenAamount);
+    tx = await _tokenA.approve(AddLiaquidity, tokenAAmount);
     await tx.wait();
 
-    tx = await tokenB.connect(signer).approve(AddLiaquidity, tokenBamount);
+    tx = await _tokenB.approve(AddLiaquidity, tokenBAmount);
     await tx.wait();
 
 
-    tx = await AddLiaquidity.connect(signer).addLiquidity(_tokenA, _tokenB, tokenAamount, tokenBamount);
+    tx = await AddLiaquidity.addLiquidity(_tokenA, _tokenB, tokenAAmount, tokenBAmount);
     const txRcpt = await tx.wait();
 
     console.log('--txResp--', txRcpt);
