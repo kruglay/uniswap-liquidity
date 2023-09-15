@@ -5,7 +5,7 @@ import {HardhatUserConfig} from "hardhat/config";
 import "@nomicfoundation/hardhat-toolbox";
 
 import "./tasks/addLiquidity";
-import {logProvider} from "./LogProvider";
+import "./tasks/verifyLiquidity";
 
 const dotenvConfigPath: string = process.env.DOTENV_CONFIG_PATH || "./.env";
 dotenvConfig({path: resolve(__dirname, dotenvConfigPath)});
