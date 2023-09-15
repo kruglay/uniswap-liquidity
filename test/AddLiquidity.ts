@@ -82,4 +82,13 @@ describe("AddLiaquidity contract", async () => {
         expect(balanceBbefore - balanceBafter).to.eq(event?.args[5]);
 
     })
+
+    it("Should have allowance more than amount for contract", async () => {
+        const {owner, user1, user2, weuroToken, wrubToken, uniswapToken, liquidityContract, wethToken, uniswapRouterToken} = await loadFixture(deployFixture);
+        const eth = ethers.parseEther("1");
+
+        await expect(liquidityContract.connect(user1).addLiquidity(weuroToken, wrubToken, 11n * eth, 3n * eth)).to.revertedWith("Insufficient allowance for contract 'AddLiquidity'");
+
+        await expect(liquidityContract.connect(user1).addLiquidity(weuroToken, wrubToken, 1n * eth, 13n * eth)).to.revertedWith("Insufficient allowance for contract 'AddLiquidity'");
+    })
 })  
